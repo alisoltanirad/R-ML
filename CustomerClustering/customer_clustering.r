@@ -1,4 +1,5 @@
 # https://github.com/alisoltanirad/R-ML.git
+# Clustering method: K-means
 library(cluster)
 
 main <- function(){
@@ -7,18 +8,15 @@ main <- function(){
     plot_clusters(dataset, clusters)
 }
 
-
 plot_clusters <- function(dataset, clusters){
     clusplot(dataset, clusters, lines=0, shade=TRUE, color=TRUE, labels=TRUE,
              plotchar=FALSE, span=TRUE, main=paste('Clusters of Customers'),
              xlab='Annual Income', ylab='Spending Score')
 }
 
-
 get_clusters <- function(dataset){
     return(kmeans(x=dataset, centers=5)$cluster)
 }
-
 
 get_cluster_numbers <- function(dataset){
     wcss = vector()
@@ -27,11 +25,9 @@ get_cluster_numbers <- function(dataset){
          xlab='Number of Clusters', ylab='WCSS')
 }
 
-
 get_dataset <- function(){
     return(read.csv('Mall_Customers.csv')[4:5])
 }
-
 
 if (!interactive()){
     main()
