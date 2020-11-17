@@ -9,20 +9,20 @@ main <- function(){
     evaluate_classifier(data, predictions)
 }
 
-classify <- function(data_set){
-    classifier = randomForest(x=data_set$train[-3],
-                              y=data_set$train$Purchased,
-                              ntree=500)
-    predictions = predict(classifier, newdata=data_set$test[-3])
-    return(predictions)
-}
-
 evaluate_classifier <- function(data_set, predictions){
     cm = table(data_set$test$Purchased, predictions)
     true_predictions = cm[1] + cm[4]
     all_predictions = cm[1] + cm[2] + cm[3] + cm[4]
     accuracy = true_predictions / all_predictions
     print(sprintf('Accuracy: %s', accuracy*100))
+}
+
+classify <- function(data_set){
+    classifier = randomForest(x=data_set$train[-3],
+                              y=data_set$train$Purchased,
+                              ntree=500)
+    predictions = predict(classifier, newdata=data_set$test[-3])
+    return(predictions)
 }
 
 preprocess_data <- function(data){
