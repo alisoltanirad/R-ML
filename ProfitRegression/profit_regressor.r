@@ -3,6 +3,15 @@
 library(caTools)
 library(e1071)
 
+train <- function(data_set){
+    regressor = svm(formula=Profit~.,
+                    data=data_set$train,
+                    type='eps-regression',
+                    kernel='radial')
+    predictions = predict(regressor, newdata=data_set$test)
+    return(predictions)
+}
+
 preprocess_data <- function(data){
     data$State = factor(data$State,
                         levels=c('New York', 'California', 'Florida'),
