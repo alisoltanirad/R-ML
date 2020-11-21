@@ -2,6 +2,30 @@
 # Regression method: SVR
 library(caTools)
 library(e1071)
+library(ggplot2)
+install.packages('ggplot2')
+
+main <- function(){
+    data = preprocess_data(get_data())
+    predictions = train(data)
+    evaluate_regressor(data, predictions)
+}
+
+evaluate_regressor <- function(data_set, predictions){
+    n_items = length(predictions)
+    value_sum = 0
+    error_sum = 0
+    for (i in 1:n_items){
+        value_sum = value_sum + data_set$test$Profit[i]
+        error_sum = error_sum + abs(predictions[i] - data_set$test$Profit[i])
+    }
+    
+    mean_value = value_sum / n_items
+    mean_error = error_sum / n_items
+    
+    mean_error = mean_error / mean_value
+    print(sprintf('Error Percentage: %s', mean_error*100))
+}
 
 train <- function(data_set){
     regressor = svm(formula=Profit~.,
