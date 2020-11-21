@@ -1,0 +1,11 @@
+.DS_Store
+.gitignore
+CustomerClustering/.DS_Store
+CustomerClustering/.RData
+CustomerClustering/.Rhistory
+PurchaseClassification/.DS_Store
+PurchaseClassification/.RData
+PurchaseClassification/.Rhistory
+ProfitRegression/.DS_Store
+ProfitRegression/.RData
+ProfitRegression/.Rhistory
