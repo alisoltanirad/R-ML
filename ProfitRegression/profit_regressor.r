@@ -9,21 +9,32 @@ main <- function(){
     data = preprocess_data(get_data())
     predictions = train(data)
     evaluate_regressor(data, predictions)
-    visualize_regressor(data, Marketing.Spend)
+    visualize_regressor(data)
 }
 
-visualize_regressor <- function(data, attribute) {
-    print(data)
-    x_grid = seq(min(data$Marketing.Spend), max(data$Marketing.Spend), 0.1)
+visualize_regressor <- function(data_set) {
+    regressor = svm(formula=Profit~.,
+                    data=data_set$train[c('Marketing.Spend', 'Profit')],
+                    type='eps-regression',
+                    kernel='radial')
+    
+    x_grid = seq(
+        min(data_set$train$Marketing.Spend), 
+        max(data_set$train$Marketing.Spend), 
+        0.1
+        )
     ggplot() +
-        geom_point(aes(x = data$attribute, y = data$Profit), colour = 'red') +
+        geom_point(
+            aes(x = data_set$train$Marketing.Spend, y = data_set$train$Profit), 
+            colour = 'red'
+            ) +
         geom_line(
             aes(x = x_grid, y = predict(
-                regressor, newdata = data.frame(Level = x_grid))
-                ), 
+                regressor, newdata = data.frame(Marketing.Spend = x_grid)
+                )), 
             colour = 'blue') +
         ggtitle('SVR') +
-        xlab(attribute) +
+        xlab('Marketing Spend') +
         ylab('Profit')
 }
 
@@ -44,11 +55,10 @@ evaluate_regressor <- function(data_set, predictions) {
 }
 
 train <- function(data_set) {
-    svm_regressor = svm(formula=Profit~.,
+    regressor = svm(formula=Profit~.,
                     data=data_set$train,
                     type='eps-regression',
                     kernel='radial')
-    assign('regressor', svm_regressor, envir=.GlobalEnv)
     predictions = predict(regressor, newdata=data_set$test)
     return(predictions)
 }
