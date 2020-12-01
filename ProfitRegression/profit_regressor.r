@@ -9,9 +9,25 @@ main <- function(){
     data = preprocess_data(get_data())
     predictions = train(data)
     evaluate_regressor(data, predictions)
+    visualize_regressor(data, Marketing.Spend)
 }
 
-evaluate_regressor <- function(data_set, predictions){
+visualize_regressor <- function(data, attribute) {
+    print(data)
+    x_grid = seq(min(data$Marketing.Spend), max(data$Marketing.Spend), 0.1)
+    ggplot() +
+        geom_point(aes(x = data$attribute, y = data$Profit), colour = 'red') +
+        geom_line(
+            aes(x = x_grid, y = predict(
+                regressor, newdata = data.frame(Level = x_grid))
+                ), 
+            colour = 'blue') +
+        ggtitle('SVR') +
+        xlab(attribute) +
+        ylab('Profit')
+}
+
+evaluate_regressor <- function(data_set, predictions) {
     n_items = length(predictions)
     value_sum = 0
     error_sum = 0
@@ -27,16 +43,17 @@ evaluate_regressor <- function(data_set, predictions){
     print(sprintf('Error Percentage: %s', mean_error*100))
 }
 
-train <- function(data_set){
-    regressor = svm(formula=Profit~.,
+train <- function(data_set) {
+    svm_regressor = svm(formula=Profit~.,
                     data=data_set$train,
                     type='eps-regression',
                     kernel='radial')
+    assign('regressor', svm_regressor, envir=.GlobalEnv)
     predictions = predict(regressor, newdata=data_set$test)
     return(predictions)
 }
 
-preprocess_data <- function(data){
+preprocess_data <- function(data) {
     data$State = factor(data$State,
                         levels=c('New York', 'California', 'Florida'),
                         labels=c(1, 2, 3))
@@ -51,10 +68,10 @@ preprocess_data <- function(data){
     return(data_set)
 }
 
-get_data <- function(){
+get_data <- function() {
     return(read.csv('Sturtups.csv')[3:5])
 }
 
-if (!interactive()){
+if (!interactive()) {
     main()
 }
